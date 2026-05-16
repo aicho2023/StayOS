@@ -9,8 +9,11 @@ on conflict (id) do nothing;
 insert into stays
   (id, property_id, reservation_holder_id, purpose_of_trip, occasion, arrival_date, departure_date, status, group_size, interaction_preference, budget_sensitivity, created_at)
 values
-  ('aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', 'rosewood-sand-hill', '11111111-1111-4111-8111-111111111111', 'Founder team in Menlo Park for partner meetings and a late-stage fundraising pitch.', 'VC pitch week decompression', '2026-05-16', '2026-05-19', 'arriving_today', 3, 'low_touch', 'low', '2026-05-16T09:30:00-07:00')
-on conflict (id) do nothing;
+  ('aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', 'rosewood-sand-hill', '11111111-1111-4111-8111-111111111111', 'Founder team in Menlo Park after Sand Hill Road partner meetings, a late-stage fundraising pitch, and a delayed inbound flight from Seattle.', 'Founder retreat after investor meetings', '2026-05-16', '2026-05-19', 'arriving_today', 3, 'low_touch', 'low', '2026-05-16T09:30:00-07:00')
+on conflict (id) do update set
+  purpose_of_trip = excluded.purpose_of_trip,
+  occasion = excluded.occasion,
+  interaction_preference = excluded.interaction_preference;
 
 insert into stay_guests (stay_id, guest_id, role)
 values
@@ -22,27 +25,29 @@ on conflict (stay_id, guest_id) do nothing;
 insert into memories
   (guest_id, memory, source, confidence_score, permission_scope)
 values
-  ('11111111-1111-4111-8111-111111111111', 'Prefers quietly handled arrivals and concise app messages after travel days.', 'Previous Rosewood Sand Hill stay', 0.86, 'property'),
-  ('33333333-3333-4333-8333-333333333333', 'Asked for feather-free pillows and a workspace away from the bed.', 'Pre-arrival preference form', 0.94, 'stay'),
-  ('22222222-2222-4222-8222-222222222222', 'Enjoys low-key California cuisine, usually avoids tasting menus after work events.', 'Dining note', 0.72, 'staff');
+  ('11111111-1111-4111-8111-111111111111', 'Prefers quietly handled arrivals, concise app messages, and no public recognition when traveling with her leadership team.', 'Previous Rosewood Sand Hill stay', 0.86, 'property'),
+  ('33333333-3333-4333-8333-333333333333', 'Asked for feather-free pillows, a desk setup away from the bed, and sparkling water near the workspace before arrival.', 'Pre-arrival preference form', 0.94, 'stay'),
+  ('22222222-2222-4222-8222-222222222222', 'Enjoys low-key California cuisine and usually avoids tasting menus after work events; prefers a flexible table over a fixed dining commitment.', 'Dining note', 0.72, 'staff');
 
 insert into communications
   (stay_id, sender_type, channel, message, created_at)
 values
-  ('aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', 'guest', 'internal_note', 'Olivia mentioned the team is probably keeping things low-key tonight after meetings.', '2026-05-16T13:40:00-07:00'),
-  ('aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', 'staff', 'app', 'We will keep arrival light and make sure the suites are ready for a quiet reset.', '2026-05-16T13:44:00-07:00');
+  ('aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', 'guest', 'internal_note', 'Olivia mentioned, ''We''re probably keeping things low-key tonight. Everyone''s talked enough for one day.''', '2026-05-16T13:40:00-07:00'),
+  ('aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', 'staff', 'app', 'We will keep arrival light, prepare the suites for a quiet reset, and hold one easy dinner option without needing a decision at check-in.', '2026-05-16T13:44:00-07:00');
 
 insert into tasks
   (stay_id, assigned_to, priority, status, task_type, description, due_at)
 values
-  ('aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', 'Front Office', 'high', 'approved', 'arrival', 'Prepare express arrival path; keep orientation brief and in-room.', '2026-05-16T15:30:00-07:00'),
-  ('aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', 'Housekeeping', 'medium', 'approved', 'housekeeping', 'Set suites to 68F, soft lighting, feather-free pillows for Priya.', '2026-05-16T15:00:00-07:00');
+  ('aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', 'Front Office', 'high', 'approved', 'arrival', 'Prepare in-room express arrival; greet by name, skip lobby orientation, and avoid public recognition.', '2026-05-16T15:30:00-07:00'),
+  ('aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', 'Housekeeping', 'medium', 'approved', 'housekeeping', 'Set nearby suites to 68F, soft lighting, music off, feather-free pillows for Priya, and desks cleared with sparkling water.', '2026-05-16T15:00:00-07:00'),
+  ('aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', 'Madera Host', 'medium', 'suggested', 'dining', 'Soft-hold one garden-adjacent Madera table and one in-room dining backup; release whichever is not used after arrival.', '2026-05-16T17:30:00-07:00');
 
 insert into moments
   (stay_id, title, reasoning, guest_message, staff_action, revenue_opportunity, relevance_score, comfort_score, creepiness_score, status)
 values
-  ('aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', 'Quiet dinner hold at Madera', 'The group signaled a low-key evening after investor meetings. A held table creates optionality without pressure.', 'Welcome in. We have kept things light for your arrival and have a quiet table available this evening if helpful.', 'Hold a 7:45 PM patio-adjacent table and mention it only once in the arrival note.', 63, 94, 92, 14, 'suggested'),
-  ('aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', 'Discreet transport buffer', 'A short transport buffer helps the group move from pitch meetings to arrival without a coordination burden.', 'Your arrival timing is flexible. We can keep the transfer light if your meetings run long.', 'Ask concierge to keep one house car window flexible between 4:15 and 5:15 PM.', 28, 86, 84, 18, 'suggested');
+  ('aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', 'A quiet table, held lightly', 'Olivia explicitly signaled the group has talked enough for one day, while Marcus tends to prefer low-key California cuisine after work events. A soft hold creates ease without forcing a decision.', 'Welcome in. We have kept things light for your arrival and have a quiet table available this evening if helpful.', 'Soft-hold the 7:45 PM garden-adjacent Madera table and mention it once in the welcome note; release it quietly if they decline.', 63, 94, 92, 14, 'suggested'),
+  ('aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', 'Flexible arrival buffer', 'The inbound flight delay and final meeting uncertainty make exact timing fragile. Keeping transport flexible removes coordination work without asking the group to manage another schedule.', 'Your arrival timing can stay flexible. We will keep things easy if the afternoon runs longer than expected.', 'Keep one house car window flexible between 4:15 and 5:30 PM and avoid asking for a precise arrival update unless the guest initiates.', 28, 86, 84, 18, 'suggested'),
+  ('aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', 'Suite reset before they ask', 'The group wants a low-friction arrival, Priya has a practical feather-free/workspace preference, and Olivia prefers concise service. Preparing the rooms invisibly is more valuable than another message.', 'Your suites are ready for a quiet reset, with the room details kept simple for arrival.', 'Confirm adjacent suites, 68F temperature, soft lighting, music off, cleared desks, sparkling water, and feather-free pillows for Priya before the group reaches the property.', 12, 96, 95, 8, 'suggested');
 
 insert into spending
   (stay_id, category, amount, source, timestamp)
@@ -122,9 +127,11 @@ values
 insert into arrival_signals
   (id, stay_id, signal_type, source, summary, trust_level, consent_scope, created_at)
 values
-  ('arrival-founder-flight', 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', 'flight', 'Flight status integration', 'SFO arrival moved 22 minutes later; likely arrival at property between 4:45 and 5:15 PM.', 'observed', 'stay', '2026-05-16T09:30:00-07:00'),
-  ('arrival-founder-social', 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', 'staff_note', 'Experience lead note', 'Guest said the group is probably keeping things low-key tonight.', 'stated', 'stay', '2026-05-16T09:30:00-07:00'),
-  ('arrival-founder-local', 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', 'local_context', 'Property programming', 'Madera has two quieter early-evening tables and garden seating is calm before 8 PM.', 'observed', 'property', '2026-05-16T09:30:00-07:00'),
+  ('arrival-founder-flight', 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', 'flight', 'Flight status integration', 'Inbound SFO flight moved 22 minutes later after a connection delay; likely arrival at property between 4:45 and 5:15 PM.', 'observed', 'stay', '2026-05-16T09:30:00-07:00'),
+  ('arrival-founder-social', 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', 'staff_note', 'Experience lead note', 'Olivia said, ''We''re probably keeping things low-key tonight. Everyone''s talked enough for one day.''', 'stated', 'stay', '2026-05-16T09:30:00-07:00'),
+  ('arrival-founder-local', 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', 'local_context', 'Property programming', 'Madera has a garden-adjacent table at 7:45 PM, a quieter alcove at 8:15 PM, and in-room dining can stage a family-style California menu without requiring a decision at check-in.', 'observed', 'property', '2026-05-16T09:30:00-07:00'),
+  ('arrival-founder-room', 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', 'preference', 'Pre-arrival preference form', 'Group asked for three nearby suites, soft lighting, feather-free pillows for Priya, desks cleared, and music off by default.', 'stated', 'stay', '2026-05-16T09:30:00-07:00'),
+  ('arrival-founder-meeting', 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', 'staff_note', 'Concierge handoff', 'Their final meeting may run long; avoid time-sensitive greetings and keep one house car window flexible rather than asking for exact timing.', 'stated', 'stay', '2026-05-16T09:30:00-07:00'),
   ('arrival-anniversary-history', 'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb', 'preference', 'Rosewood London dining note', 'Last anniversary stay favored handwritten notes and understated dessert, not room decoration.', 'observed', 'global', '2026-05-16T09:30:00-07:00'),
   ('arrival-wellness-fatigue', 'cccccccc-cccc-4ccc-8ccc-cccccccccccc', 'wellness', 'Pre-arrival form', 'Guest selected sleep quality, quiet meals, and no morning calls as priorities.', 'stated', 'stay', '2026-05-16T09:30:00-07:00'),
   ('arrival-family-context', 'dddddddd-dddd-4ddd-8ddd-dddddddddddd', 'local_context', 'Local events', 'Stanford Cantor Arts Center has a family-friendly afternoon window that fits the second day.', 'observed', 'property', '2026-05-16T09:30:00-07:00')
@@ -141,8 +148,8 @@ on conflict (id) do update set fit_note = excluded.fit_note;
 insert into memory_governance
   (id, stay_id, candidate_memory, decision, rationale, expires_at)
 values
-  ('memory-gov-founder-1', 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', 'Founder group was socially tired after VC meetings.', 'stay_scoped', 'Useful for this arrival, but emotional state should not become a permanent profile trait.', '2026-05-20T12:00:00-07:00'),
-  ('memory-gov-founder-2', 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', 'Priya prefers feather-free pillows.', 'remember', 'Practical comfort preference explicitly provided and low sensitivity.', null),
+  ('memory-gov-founder-1', 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', 'Founder group was socially tired after VC meetings and asked for a low-key evening.', 'stay_scoped', 'Useful for this arrival, but emotional state should not become a permanent profile trait.', '2026-05-20T12:00:00-07:00'),
+  ('memory-gov-founder-2', 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', 'Priya prefers feather-free pillows and a cleared workspace.', 'remember', 'Practical comfort preference explicitly provided and low sensitivity.', null),
   ('memory-gov-anniversary', 'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb', 'Anniversary date and preference for understated gestures.', 'ask_permission', 'High-value continuity, but long-term relationship memory should be guest-permissioned.', null),
   ('memory-gov-wellness', 'cccccccc-cccc-4ccc-8ccc-cccccccccccc', 'Guest appears depleted after work month.', 'never_store', 'Inferred wellness state is sensitive and should not persist beyond operational handling.', null)
 on conflict (id) do update set decision = excluded.decision, rationale = excluded.rationale;
@@ -150,7 +157,7 @@ on conflict (id) do update set decision = excluded.decision, rationale = exclude
 insert into suppressed_recommendations
   (id, stay_id, title, suppression_reason, safer_alternative)
 values
-  ('suppress-founder-spa', 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', 'Push a spa recovery package after meetings', 'Too commercially forward and infers stress from work context.', 'Hold one quiet dinner option and preserve optionality.'),
+  ('suppress-founder-spa', 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', 'Send a spa recovery package because the team seems stressed', 'Too commercially forward, infers stress from work context, and adds another decision after a long travel day.', 'Prepare restful room conditions and one optional evening dining path without naming stress or fatigue.'),
   ('suppress-anniversary-room', 'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb', 'Decorate suite with anniversary setup before arrival', 'Prior preference indicates understated gestures; decoration risks feeling generic.', 'Prepare a handwritten note and discreet dessert option.'),
   ('suppress-wellness-memory', 'cccccccc-cccc-4ccc-8ccc-cccccccccccc', 'Store recovery profile for future properties', 'Wellness inference requires explicit permission and should not become global memory.', 'Use sleep preferences for this stay only.')
 on conflict (id) do update set suppression_reason = excluded.suppression_reason;
@@ -158,7 +165,7 @@ on conflict (id) do update set suppression_reason = excluded.suppression_reason;
 insert into staff_briefs
   (id, stay_id, briefing_type, summary, priority, owner)
 values
-  ('brief-founder-arrival', 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', 'arrival', 'Founder group arrives after investor meetings. Keep check-in short, suites quiet, and offer one optional Madera table.', 'high', 'Experience Lead'),
+  ('brief-founder-arrival', 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', 'arrival', 'Founder group arrives after delayed travel and investor meetings. Keep check-in in-room, protect quiet suites, avoid public recognition, and prepare one optional Madera or in-room dining path.', 'high', 'Experience Lead'),
   ('brief-anniversary-arrival', 'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb', 'arrival', 'Returning couple values understated recognition. Coordinate note and dessert without visible fanfare.', 'medium', 'Guest Relations'),
   ('brief-wellness-arrival', 'cccccccc-cccc-4ccc-8ccc-cccccccccccc', 'arrival', 'Solo recovery guest asked for quiet meals and sleep quality. Protect morning privacy and avoid upsell language.', 'high', 'Wellness Concierge')
 on conflict (id) do update set summary = excluded.summary, owner = excluded.owner;

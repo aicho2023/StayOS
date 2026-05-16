@@ -180,8 +180,9 @@ export const stays: Stay[] = [
     id: "stay-sandhill-founders",
     property_id: "rosewood-sand-hill",
     reservation_holder_id: "guest-olivia",
-    purpose_of_trip: "Founder team in Menlo Park for partner meetings and a late-stage fundraising pitch.",
-    occasion: "VC pitch week decompression",
+    purpose_of_trip:
+      "Founder team in Menlo Park after Sand Hill Road partner meetings, a late-stage fundraising pitch, and a delayed inbound flight from Seattle.",
+    occasion: "Founder retreat after investor meetings",
     arrival_date: "2026-05-16",
     departure_date: "2026-05-19",
     status: "arriving_today",
@@ -308,7 +309,8 @@ export const memories: Memory[] = [
   {
     id: "memory-1",
     guest_id: "guest-olivia",
-    memory: "Prefers quietly handled arrivals and concise app messages after travel days.",
+    memory:
+      "Prefers quietly handled arrivals, concise app messages, and no public recognition when traveling with her leadership team.",
     source: "Previous Rosewood Sand Hill stay",
     confidence_score: 0.86,
     permission_scope: "property",
@@ -318,7 +320,8 @@ export const memories: Memory[] = [
   {
     id: "memory-2",
     guest_id: "guest-priya",
-    memory: "Asked for feather-free pillows and a workspace away from the bed.",
+    memory:
+      "Asked for feather-free pillows, a desk setup away from the bed, and sparkling water near the workspace before arrival.",
     source: "Pre-arrival preference form",
     confidence_score: 0.94,
     permission_scope: "stay",
@@ -328,7 +331,8 @@ export const memories: Memory[] = [
   {
     id: "memory-3",
     guest_id: "guest-marcus",
-    memory: "Enjoys low-key California cuisine, usually avoids tasting menus after work events.",
+    memory:
+      "Enjoys low-key California cuisine and usually avoids tasting menus after work events; prefers a flexible table over a fixed dining commitment.",
     source: "Dining note",
     confidence_score: 0.72,
     permission_scope: "staff",
@@ -393,7 +397,8 @@ export const arrivalSignals: ArrivalSignal[] = [
     stay_id: "stay-sandhill-founders",
     signal_type: "flight",
     source: "Flight status integration",
-    summary: "SFO arrival moved 22 minutes later; likely arrival at property between 4:45 and 5:15 PM.",
+    summary:
+      "Inbound SFO flight moved 22 minutes later after a connection delay; likely arrival at property between 4:45 and 5:15 PM.",
     trust_level: "observed",
     consent_scope: "stay",
     created_at: now,
@@ -403,7 +408,8 @@ export const arrivalSignals: ArrivalSignal[] = [
     stay_id: "stay-sandhill-founders",
     signal_type: "staff_note",
     source: "Experience lead note",
-    summary: "Guest said the group is probably keeping things low-key tonight.",
+    summary:
+      "Olivia said, 'We're probably keeping things low-key tonight. Everyone's talked enough for one day.'",
     trust_level: "stated",
     consent_scope: "stay",
     created_at: now,
@@ -413,9 +419,32 @@ export const arrivalSignals: ArrivalSignal[] = [
     stay_id: "stay-sandhill-founders",
     signal_type: "local_context",
     source: "Property programming",
-    summary: "Madera has two quieter early-evening tables and garden seating is calm before 8 PM.",
+    summary:
+      "Madera has a garden-adjacent table at 7:45 PM, a quieter alcove at 8:15 PM, and in-room dining can stage a family-style California menu without requiring a decision at check-in.",
     trust_level: "observed",
     consent_scope: "property",
+    created_at: now,
+  },
+  {
+    id: "arrival-founder-room",
+    stay_id: "stay-sandhill-founders",
+    signal_type: "preference",
+    source: "Pre-arrival preference form",
+    summary:
+      "Group asked for three nearby suites, soft lighting, feather-free pillows for Priya, desks cleared, and music off by default.",
+    trust_level: "stated",
+    consent_scope: "stay",
+    created_at: now,
+  },
+  {
+    id: "arrival-founder-meeting",
+    stay_id: "stay-sandhill-founders",
+    signal_type: "staff_note",
+    source: "Concierge handoff",
+    summary:
+      "Their final meeting may run long; avoid time-sensitive greetings and keep one house car window flexible rather than asking for exact timing.",
+    trust_level: "stated",
+    consent_scope: "stay",
     created_at: now,
   },
   {
@@ -484,7 +513,7 @@ export const memoryGovernance: MemoryGovernance[] = [
   {
     id: "memory-gov-founder-1",
     stay_id: "stay-sandhill-founders",
-    candidate_memory: "Founder group was socially tired after VC meetings.",
+    candidate_memory: "Founder group was socially tired after VC meetings and asked for a low-key evening.",
     decision: "stay_scoped",
     rationale: "Useful for this arrival, but emotional state should not become a permanent profile trait.",
     expires_at: "2026-05-20T12:00:00-07:00",
@@ -492,7 +521,7 @@ export const memoryGovernance: MemoryGovernance[] = [
   {
     id: "memory-gov-founder-2",
     stay_id: "stay-sandhill-founders",
-    candidate_memory: "Priya prefers feather-free pillows.",
+    candidate_memory: "Priya prefers feather-free pillows and a cleared workspace.",
     decision: "remember",
     rationale: "Practical comfort preference explicitly provided and low sensitivity.",
     expires_at: null,
@@ -519,9 +548,11 @@ export const suppressedRecommendations: SuppressedRecommendation[] = [
   {
     id: "suppress-founder-spa",
     stay_id: "stay-sandhill-founders",
-    title: "Push a spa recovery package after meetings",
-    suppression_reason: "Too commercially forward and infers stress from work context.",
-    safer_alternative: "Hold one quiet dinner option and preserve optionality.",
+    title: "Send a spa recovery package because the team seems stressed",
+    suppression_reason:
+      "Too commercially forward, infers stress from work context, and adds another decision after a long travel day.",
+    safer_alternative:
+      "Prepare restful room conditions and one optional evening dining path without naming stress or fatigue.",
   },
   {
     id: "suppress-anniversary-room",
@@ -545,7 +576,7 @@ export const staffBriefs: StaffBrief[] = [
     stay_id: "stay-sandhill-founders",
     briefing_type: "arrival",
     summary:
-      "Founder group arrives after investor meetings. Keep check-in short, suites quiet, and offer one optional Madera table.",
+      "Founder group arrives after delayed travel and investor meetings. Keep check-in in-room, protect quiet suites, avoid public recognition, and prepare one optional Madera or in-room dining path.",
     priority: "high",
     owner: "Experience Lead",
   },
@@ -594,7 +625,8 @@ export const communications: Communication[] = [
     stay_id: "stay-sandhill-founders",
     sender_type: "guest",
     channel: "internal_note",
-    message: "Olivia mentioned the team is probably keeping things low-key tonight after meetings.",
+    message:
+      "Olivia mentioned, 'We're probably keeping things low-key tonight. Everyone's talked enough for one day.'",
     created_at: "2026-05-16T13:40:00-07:00",
   },
   {
@@ -602,7 +634,8 @@ export const communications: Communication[] = [
     stay_id: "stay-sandhill-founders",
     sender_type: "staff",
     channel: "app",
-    message: "We will keep arrival light and make sure the suites are ready for a quiet reset.",
+    message:
+      "We will keep arrival light, prepare the suites for a quiet reset, and hold one easy dinner option without needing a decision at check-in.",
     created_at: "2026-05-16T13:44:00-07:00",
   },
   {
@@ -623,7 +656,7 @@ export const tasks: Task[] = [
     priority: "high",
     status: "approved",
     task_type: "arrival",
-    description: "Prepare express arrival path; keep orientation brief and in-room.",
+    description: "Prepare in-room express arrival; greet by name, skip lobby orientation, and avoid public recognition.",
     due_at: "2026-05-16T15:30:00-07:00",
     created_at: now,
   },
@@ -634,8 +667,21 @@ export const tasks: Task[] = [
     priority: "medium",
     status: "approved",
     task_type: "housekeeping",
-    description: "Set suites to 68F, soft lighting, feather-free pillows for Priya.",
+    description:
+      "Set nearby suites to 68F, soft lighting, music off, feather-free pillows for Priya, and desks cleared with sparkling water.",
     due_at: "2026-05-16T15:00:00-07:00",
+    created_at: now,
+  },
+  {
+    id: "task-founder-dining",
+    stay_id: "stay-sandhill-founders",
+    assigned_to: "Madera Host",
+    priority: "medium",
+    status: "suggested",
+    task_type: "dining",
+    description:
+      "Soft-hold one garden-adjacent Madera table and one in-room dining backup; release whichever is not used after arrival.",
+    due_at: "2026-05-16T17:30:00-07:00",
     created_at: now,
   },
   {
@@ -655,12 +701,13 @@ export const moments: Moment[] = [
   {
     id: "moment-quiet-table",
     stay_id: "stay-sandhill-founders",
-    title: "Quiet dinner hold at Madera",
+    title: "A quiet table, held lightly",
     reasoning:
-      "The group signaled a low-key evening after investor meetings. A held table creates optionality without pressure.",
+      "Olivia explicitly signaled the group has talked enough for one day, while Marcus tends to prefer low-key California cuisine after work events. A soft hold creates ease without forcing a decision.",
     guest_message:
       "Welcome in. We have kept things light for your arrival and have a quiet table available this evening if helpful.",
-    staff_action: "Hold a 7:45 PM patio-adjacent table and mention it only once in the arrival note.",
+    staff_action:
+      "Soft-hold the 7:45 PM garden-adjacent Madera table and mention it once in the welcome note; release it quietly if they decline.",
     revenue_opportunity: 63,
     relevance_score: 94,
     comfort_score: 92,
@@ -671,15 +718,34 @@ export const moments: Moment[] = [
   {
     id: "moment-transport",
     stay_id: "stay-sandhill-founders",
-    title: "Discreet transport buffer",
+    title: "Flexible arrival buffer",
     reasoning:
-      "A short transport buffer helps the group move from pitch meetings to arrival without a coordination burden.",
-    guest_message: "Your arrival timing is flexible. We can keep the transfer light if your meetings run long.",
-    staff_action: "Ask concierge to keep one house car window flexible between 4:15 and 5:15 PM.",
+      "The inbound flight delay and final meeting uncertainty make exact timing fragile. Keeping transport flexible removes coordination work without asking the group to manage another schedule.",
+    guest_message:
+      "Your arrival timing can stay flexible. We will keep things easy if the afternoon runs longer than expected.",
+    staff_action:
+      "Keep one house car window flexible between 4:15 and 5:30 PM and avoid asking for a precise arrival update unless the guest initiates.",
     revenue_opportunity: 28,
     relevance_score: 86,
     comfort_score: 84,
     creepiness_score: 18,
+    status: "suggested",
+    created_at: now,
+  },
+  {
+    id: "moment-room-reset",
+    stay_id: "stay-sandhill-founders",
+    title: "Suite reset before they ask",
+    reasoning:
+      "The group wants a low-friction arrival, Priya has a practical feather-free/workspace preference, and Olivia prefers concise service. Preparing the rooms invisibly is more valuable than another message.",
+    guest_message:
+      "Your suites are ready for a quiet reset, with the room details kept simple for arrival.",
+    staff_action:
+      "Confirm adjacent suites, 68F temperature, soft lighting, music off, cleared desks, sparkling water, and feather-free pillows for Priya before the group reaches the property.",
+    revenue_opportunity: 12,
+    relevance_score: 96,
+    comfort_score: 95,
+    creepiness_score: 8,
     status: "suggested",
     created_at: now,
   },
@@ -754,12 +820,12 @@ export const roomPreferences: RoomPreference[] = [
 export const contextSummary: StayContextSummary = {
   interaction_style: "low_touch",
   trip_type: "founder fundraising and decompression",
-  energy_state: "socially tired but relieved after high-stakes meetings",
+  energy_state: "socially depleted, travel-delayed, and likely relieved after high-stakes meetings",
   recommended_tone: "calm, brief, optional",
   stay_read:
-    "The group wants the property to quietly remove friction while preserving their sense of control.",
+    "Olivia's group is arriving after investor meetings, delayed travel, and a high-cognitive-load day. The best service is invisible orchestration: rooms prepared exactly, flexible timing, and one optional evening path.",
   restraint_guidance:
-    "Offer one useful option, avoid naming inferred stress, and let the team decline without follow-up.",
+    "Do not name fatigue, stress, fundraising, or investor context in guest-facing copy. Offer one useful option, keep it optional, and let the team decline without follow-up.",
 };
 
 export function getDemoStayDetail(stayId = "stay-sandhill-founders"): StayDetail {
