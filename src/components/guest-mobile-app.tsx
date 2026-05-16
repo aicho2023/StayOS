@@ -44,6 +44,8 @@ export function GuestMobileApp({ detail, framed = false }: GuestMobileAppProps) 
   } | null>(null);
   const [isRouting, startRouting] = useTransition();
   const [activeTab, setActiveTab] = useState<"stay" | "updates" | "services" | "messages">("stay");
+  const visibleMoments = state.approvedMoments.filter((moment) => moment.message.trim());
+  const eveningMoment = visibleMoments.at(-1);
   const personalized = getPersonalizedRecommendations({
     occasion: state.booking.occasion,
     lastSignal: state.lastSignal,
@@ -89,7 +91,7 @@ export function GuestMobileApp({ detail, framed = false }: GuestMobileAppProps) 
       <div className="flex shrink-0 border-b border-stone-200 bg-white/70 px-2 py-2">
         {[
           ["stay", Calendar, "Stay"],
-          ["updates", Sparkles, "Updates"],
+          ["updates", Sparkles, "Moments"],
           ["services", SlidersHorizontal, "Services"],
           ["messages", MessageCircle, "Messages"],
         ].map(([key, Icon, label]) => {
@@ -150,17 +152,19 @@ export function GuestMobileApp({ detail, framed = false }: GuestMobileAppProps) 
 
             <section className="rounded-lg border border-stone-200 bg-white p-4">
               <p className="text-xs uppercase tracking-[0.16em] text-stone-400">This evening</p>
-              <p className="mt-2 font-serif text-2xl">Quiet table available</p>
+              <p className="mt-2 font-serif text-2xl">
+                {eveningMoment?.title ?? "Quiet table available"}
+              </p>
               <p className="mt-2 text-sm leading-6 text-stone-600">
-                A relaxed table can be held at Madera. No need to decide now.
+                {eveningMoment?.message ?? "A relaxed table can be held at Madera. No need to decide now."}
               </p>
               <div className="mt-4 grid grid-cols-2 gap-2">
-                <Button size="sm" onClick={() => addRequest("Guest accepted quiet table at Madera")}>
+                <Button size="sm" onClick={() => addRequest(eveningMoment ? `Guest accepted: ${eveningMoment.title}` : "Guest accepted quiet table at Madera")}>
                   <Utensils className="h-4 w-4" />
-                  Hold table
+                  Sounds good
                 </Button>
-                <Button size="sm" variant="outline" onClick={() => addRequest("Guest asked to keep evening open")}>
-                  Keep open
+                <Button size="sm" variant="outline" onClick={() => addRequest("Guest asked to keep the evening light")}>
+                  Keep it light
                 </Button>
               </div>
             </section>
@@ -195,13 +199,13 @@ export function GuestMobileApp({ detail, framed = false }: GuestMobileAppProps) 
         {activeTab === "updates" && (
           <div className="space-y-3">
             <section className="rounded-lg border border-stone-200 bg-white p-4">
-              <p className="text-xs uppercase tracking-[0.16em] text-stone-400">Staff-approved moments</p>
+              <p className="text-xs uppercase tracking-[0.16em] text-stone-400">Moments</p>
               <p className="mt-2 text-sm leading-6 text-stone-600">
-                Only updates approved by the Rosewood team appear here.
+                A few thoughtful touches for your stay, kept simple and optional.
               </p>
             </section>
-            {state.approvedMoments.length ? (
-              state.approvedMoments.map((moment) => (
+            {visibleMoments.length ? (
+              visibleMoments.map((moment) => (
                 <section key={moment.id} className="rounded-lg border border-stone-200 bg-white p-4">
                   <p className="font-serif text-2xl text-stone-950">{moment.title}</p>
                   <p className="mt-2 text-sm leading-6 text-stone-600">{moment.message}</p>
@@ -210,7 +214,7 @@ export function GuestMobileApp({ detail, framed = false }: GuestMobileAppProps) 
             ) : (
               <section className="rounded-lg border border-stone-200 bg-white p-4">
                 <p className="text-sm leading-6 text-stone-500">
-                  No staff-approved updates yet. The team will keep things quiet unless something useful is ready.
+                  We will keep things quiet unless something genuinely useful is ready.
                 </p>
               </section>
             )}
