@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { Check, RefreshCw, Sparkles, X } from "lucide-react";
 import { approveMomentAction, generateMomentsAction } from "@/app/actions";
 import { Button } from "@/components/ui/button";
+import { momentCacheKey, resetEventName } from "@/lib/demo-live-state";
 import { cn } from "@/lib/utils";
 import type { HospitalityMomentRecommendation, Moment, StayDetail } from "@/lib/types";
 
@@ -46,6 +47,7 @@ function seededToRecommendation(moment: Moment): HospitalityMomentRecommendation
 }
 
 export function StayMomentEngine({ detail, approvedMomentIds, liveContext, onApproved }: StayMomentEngineProps) {
+  const approvedMomentKey = approvedMomentIds.join("|");
   const seededMoments = Array.from(
     new Map(
       detail.moments
@@ -57,12 +59,45 @@ export function StayMomentEngine({ detail, approvedMomentIds, liveContext, onApp
   const [generated, setGenerated] = useState<HospitalityMomentRecommendation[]>([]);
   const [error, setError] = useState("");
   const [source, setSource] = useState<"anthropic" | "fallback" | "none">("none");
+  const [hasGeneratedOnce, setHasGeneratedOnce] = useState(false);
   const [approved, setApproved] = useState(() => new Set([...approvedMomentIds, ...seededMoments.filter((moment) => moment.status === "approved").map((moment) => moment.id)]));
   const [dismissed, setDismissed] = useState(() => new Set<string>());
   const [isPending, startTransition] = useTransition();
 
   const visibleGenerated = generated.filter((moment) => moment.scores.creepiness <= 35);
   const visibleSeeded = seededMoments.filter((moment) => !approved.has(moment.id) && !dismissed.has(moment.id));
+
+  useEffect(() => {
+    const cacheKey = momentCacheKey(detail.stay.id);
+    try {
+      const cached = window.localStorage.getItem(cacheKey);
+      if (cached) {
+        const parsed = JSON.parse(cached) as {
+          source: "anthropic" | "fallback";
+          recommendations: HospitalityMomentRecommendation[];
+        };
+        setGenerated(parsed.recommendations);
+        setSource(parsed.source);
+        setHasGeneratedOnce(true);
+      }
+    } catch {
+      window.localStorage.removeItem(cacheKey);
+    }
+
+    function handleReset(event: Event) {
+      const custom = event as CustomEvent<{ stayId: string }>;
+      if (custom.detail?.stayId === detail.stay.id) {
+        setGenerated([]);
+        setSource("none");
+        setHasGeneratedOnce(false);
+        setApproved(new Set(approvedMomentKey ? approvedMomentKey.split("|") : []));
+        setDismissed(new Set());
+      }
+    }
+
+    window.addEventListener(resetEventName, handleReset);
+    return () => window.removeEventListener(resetEventName, handleReset);
+  }, [approvedMomentKey, detail.stay.id]);
 
   function markApproved(payload: ApprovedMomentPayload) {
     setApproved((current) => {
@@ -114,12 +149,18 @@ export function StayMomentEngine({ detail, approvedMomentIds, liveContext, onApp
   }
 
   function generateIdeas() {
+    if (hasGeneratedOnce) return;
     setError("");
     startTransition(async () => {
       try {
         const response = await generateMomentsAction(detail.stay.id, liveContext);
         setGenerated(response.recommendations);
         setSource(response.source);
+        setHasGeneratedOnce(true);
+        window.localStorage.setItem(
+          momentCacheKey(detail.stay.id),
+          JSON.stringify({ source: response.source, recommendations: response.recommendations }),
+        );
       } catch (caught) {
         setError(caught instanceof Error ? caught.message : "Could not generate ideas right now.");
       }
@@ -127,7 +168,7 @@ export function StayMomentEngine({ detail, approvedMomentIds, liveContext, onApp
   }
 
   return (
-    <section className="flex h-[730px] flex-col rounded-lg border border-stone-200 bg-white p-5 shadow-sm">
+    <section className="flex h-[730px] min-h-[730px] max-h-[730px] flex-col overflow-hidden rounded-lg border border-stone-200 bg-white p-5 shadow-sm">
       <div className="shrink-0">
         <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
           <div>
@@ -137,9 +178,9 @@ export function StayMomentEngine({ detail, approvedMomentIds, liveContext, onApp
               Generate restrained ideas, then release only what a staff member approves. Approved moments appear in the guest app.
             </p>
           </div>
-          <Button onClick={generateIdeas} disabled={isPending} type="button">
+          <Button onClick={generateIdeas} disabled={isPending || hasGeneratedOnce} type="button">
             <RefreshCw className={cn("h-4 w-4", isPending && "animate-spin")} />
-            Generate new ideas
+            {hasGeneratedOnce ? "Ideas ready" : "Generate new ideas"}
           </Button>
         </div>
       </div>

@@ -173,6 +173,40 @@ export async function approveMomentAction(momentId: string, stayId: string) {
   revalidatePath(`/guest/${stayId}`);
 }
 
+export async function resetDemoStayAction(stayId: string) {
+  const supabase = createSupabaseServerClient();
+  const databaseStayId = stayAliases[stayId] ?? stayId;
+
+  if (supabase) {
+    const { data: moments } = await supabase
+      .from("moments")
+      .select("guest_message, staff_action")
+      .eq("stay_id", databaseStayId);
+    const guestMessages = (moments ?? []).map((moment) => moment.guest_message).filter(Boolean);
+    const staffActions = (moments ?? []).map((moment) => moment.staff_action).filter(Boolean);
+
+    await supabase.from("moments").update({ status: "suggested" }).eq("stay_id", databaseStayId);
+
+    if (staffActions.length) {
+      await supabase.from("tasks").delete().eq("stay_id", databaseStayId).in("description", staffActions);
+    }
+
+    if (guestMessages.length) {
+      await supabase
+        .from("communications")
+        .delete()
+        .eq("stay_id", databaseStayId)
+        .eq("sender_type", "staff")
+        .eq("channel", "app")
+        .in("message", guestMessages);
+    }
+  }
+
+  revalidatePath(`/stays/${stayId}`);
+  revalidatePath(`/guest/${stayId}`);
+  revalidatePath("/demo");
+}
+
 const guestStaySchema = z.object({
   firstName: z.string().trim().min(1),
   lastName: z.string().trim().min(1),

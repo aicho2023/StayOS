@@ -1,8 +1,9 @@
 "use client";
 
-import { FormEvent, useMemo, useState } from "react";
+import { FormEvent, useMemo, useState, useTransition } from "react";
 import Link from "next/link";
-import { ArrowLeft, Brain, MessageCircle, Send } from "lucide-react";
+import { ArrowLeft, Brain, MessageCircle, RotateCcw, Send } from "lucide-react";
+import { resetDemoStayAction } from "@/app/actions";
 import { Button } from "@/components/ui/button";
 import { StayArrivalChecklist } from "@/components/stay-arrival-checklist";
 import { StayMemoryBoard } from "@/components/stay-memory-board";
@@ -18,8 +19,9 @@ type StayCrmWorkspaceProps = {
 
 export function StayCrmWorkspace({ detail, compact = false }: StayCrmWorkspaceProps) {
   const initialState = useMemo(() => createInitialDemoState(detail), [detail]);
-  const { state, sendStaffMessage, approveMoment, addArrivalTasks } = useDemoLiveState(detail.stay.id, initialState);
+  const { state, sendStaffMessage, approveMoment, addArrivalTasks, resetDemo } = useDemoLiveState(detail.stay.id, initialState);
   const [reply, setReply] = useState("Of course. We will keep tonight casual and light.");
+  const [isResetting, startReset] = useTransition();
   const latestGuestMessage = [...state.messages].reverse().find((message) => message.sender === "guest");
 
   function submitReply(event: FormEvent<HTMLFormElement>) {
@@ -34,10 +36,28 @@ export function StayCrmWorkspace({ detail, compact = false }: StayCrmWorkspacePr
     <main className={cn("min-h-screen bg-[#f7f4ee] px-4 py-5 text-stone-900 md:px-8", compact && "min-h-0")}>
       <div className="mx-auto max-w-7xl">
         {!compact && (
-          <Link href="/" className="inline-flex items-center gap-2 text-sm text-stone-600 hover:text-stone-950">
-            <ArrowLeft className="h-4 w-4" />
-            Today&apos;s arrivals
-          </Link>
+          <div className="flex items-center justify-between gap-3">
+            <Link href="/" className="inline-flex items-center gap-2 text-sm text-stone-600 hover:text-stone-950">
+              <ArrowLeft className="h-4 w-4" />
+              Today&apos;s arrivals
+            </Link>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              disabled={isResetting}
+              onClick={() => {
+                startReset(async () => {
+                  await resetDemoStayAction(detail.stay.id);
+                  resetDemo();
+                  window.location.reload();
+                });
+              }}
+            >
+              <RotateCcw className={cn("h-4 w-4", isResetting && "animate-spin")} />
+              Reset demo
+            </Button>
+          </div>
         )}
 
         <section className="mt-4 rounded-lg border border-stone-200 bg-white shadow-sm">

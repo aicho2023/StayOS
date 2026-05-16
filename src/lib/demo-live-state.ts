@@ -60,9 +60,14 @@ export type DemoLiveState = {
 };
 
 const eventName = "stay-os-demo-state";
+export const resetEventName = "stay-os-demo-reset";
 
 function storageKey(stayId: string) {
   return `stay-os-demo:${stayId}`;
+}
+
+export function momentCacheKey(stayId: string) {
+  return `stay-os-moment-cache:${stayId}`;
 }
 
 function toMessage(item: Communication): DemoGuestMessage {
@@ -295,8 +300,10 @@ export function useDemoLiveState(stayId: string, fallback: DemoLiveState) {
       })),
     resetDemo: () => {
       window.localStorage.removeItem(storageKey(stayId));
+      window.localStorage.removeItem(momentCacheKey(stayId));
       setState(stableFallback);
       persist(stableFallback);
+      window.dispatchEvent(new CustomEvent(resetEventName, { detail: { stayId } }));
     },
   };
 }
