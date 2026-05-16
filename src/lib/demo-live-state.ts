@@ -90,16 +90,21 @@ function initialRoom(preference?: RoomPreference): DemoRoomState {
 }
 
 export function createInitialDemoState(detail: StayDetail): DemoLiveState {
+  const seededMessages = detail.communications.map(toMessage);
+  const hasStaffMessage = seededMessages.some((message) => message.sender === "staff");
+
   return {
-    messages: [
-      ...detail.communications.map(toMessage),
-      {
-        id: "demo-welcome",
-        sender: "staff",
-        text: detail.moments[0]?.guest_message ?? "Welcome in. We will keep arrival simple and close by.",
-        createdAt: new Date().toISOString(),
-      },
-    ],
+    messages: hasStaffMessage
+      ? seededMessages
+      : [
+          ...seededMessages,
+          {
+            id: "demo-welcome",
+            sender: "staff",
+            text: detail.moments[0]?.guest_message ?? "Welcome in. We will keep arrival simple and close by.",
+            createdAt: new Date().toISOString(),
+          },
+        ],
     room: initialRoom(detail.roomPreferences[0]),
     requests: [
       {
@@ -111,7 +116,7 @@ export function createInitialDemoState(detail: StayDetail): DemoLiveState {
     ],
     approvedMoments: [],
     arrivalTasks: [],
-    lastSignal: "Low-key evening after investor meetings",
+    lastSignal: "We're probably keeping things low-key tonight. Everyone's talked enough for one day.",
     booking: {
       arrivalDate: detail.stay.arrival_date,
       departureDate: detail.stay.departure_date,

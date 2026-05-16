@@ -32,7 +32,7 @@ values
 insert into communications
   (stay_id, sender_type, channel, message, created_at)
 values
-  ('aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', 'guest', 'internal_note', 'Olivia mentioned, ''We''re probably keeping things low-key tonight. Everyone''s talked enough for one day.''', '2026-05-16T13:40:00-07:00'),
+  ('aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', 'guest', 'app', 'We''re probably keeping things low-key tonight. Everyone''s talked enough for one day.', '2026-05-16T13:40:00-07:00'),
   ('aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', 'staff', 'app', 'We will keep arrival light, prepare the suites for a quiet reset, and hold one easy dinner option without needing a decision at check-in.', '2026-05-16T13:44:00-07:00');
 
 insert into tasks

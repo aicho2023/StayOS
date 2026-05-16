@@ -624,9 +624,8 @@ export const communications: Communication[] = [
     id: "comm-1",
     stay_id: "stay-sandhill-founders",
     sender_type: "guest",
-    channel: "internal_note",
-    message:
-      "Olivia mentioned, 'We're probably keeping things low-key tonight. Everyone's talked enough for one day.'",
+    channel: "app",
+    message: "We're probably keeping things low-key tonight. Everyone's talked enough for one day.",
     created_at: "2026-05-16T13:40:00-07:00",
   },
   {
