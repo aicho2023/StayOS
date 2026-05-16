@@ -149,7 +149,7 @@ export function StayMomentEngine({ detail, approvedMomentIds, liveContext, onApp
       )}
       {error && <p className="mt-3 rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>}
 
-      <div className="mt-5 flex gap-4 overflow-x-auto pb-3">
+      <div className="mt-5 flex h-[540px] items-stretch gap-4 overflow-x-auto pb-3">
         {visibleSeeded.map((moment) => (
           <MomentCard
             key={moment.id}
@@ -201,8 +201,8 @@ function MomentCard({
   disabled: boolean;
 }) {
   return (
-    <article className="flex min-h-full w-[360px] shrink-0 flex-col rounded-lg border border-stone-200 bg-[#fbfaf7] p-4">
-      <div>
+    <article className="flex h-full w-[360px] shrink-0 flex-col overflow-hidden rounded-lg border border-stone-200 bg-[#fbfaf7] p-4">
+      <div className="shrink-0">
         <div>
           <div className="inline-flex max-w-full items-center gap-2 rounded-md bg-white px-2 py-1 text-[11px] uppercase tracking-[0.14em] text-stone-500">
             <Sparkles className="h-3 w-3 text-clay" />
@@ -221,27 +221,29 @@ function MomentCard({
           </Button>
         </div>
       </div>
-      <p className="mt-3 text-sm leading-6 text-stone-600">{moment.reasoning}</p>
-      <div className="mt-4 rounded-md bg-linen p-3">
-        <p className="text-xs uppercase tracking-[0.14em] text-stone-400">Staff action</p>
-        <p className="mt-2 text-sm leading-5 text-stone-800">{moment.staff_action}</p>
-      </div>
-      <div className="mt-3 rounded-md bg-white p-3">
-        <p className="text-xs uppercase tracking-[0.14em] text-stone-400">Guest message</p>
-        <p className="mt-2 text-sm leading-5 text-stone-800">{moment.guest_message}</p>
-      </div>
-      {moment.task_suggestions.length > 0 && (
-        <div className="mt-3 rounded-md border border-stone-200 bg-white p-3">
-          <p className="text-xs uppercase tracking-[0.14em] text-stone-400">Creates checklist work</p>
-          <div className="mt-2 space-y-2">
-            {moment.task_suggestions.map((task) => (
-              <p key={`${task.assigned_to}-${task.description}`} className="text-sm leading-5 text-stone-700">
-                {task.description}
-              </p>
-            ))}
-          </div>
+      <div className="mt-3 min-h-0 flex-1 overflow-y-auto pr-1">
+        <p className="text-sm leading-6 text-stone-600">{moment.reasoning}</p>
+        <div className="mt-4 rounded-md bg-linen p-3">
+          <p className="text-xs uppercase tracking-[0.14em] text-stone-400">Staff action</p>
+          <p className="mt-2 text-sm leading-5 text-stone-800">{moment.staff_action}</p>
         </div>
-      )}
+        <div className="mt-3 rounded-md bg-white p-3">
+          <p className="text-xs uppercase tracking-[0.14em] text-stone-400">Guest message</p>
+          <p className="mt-2 text-sm leading-5 text-stone-800">{moment.guest_message}</p>
+        </div>
+        {moment.task_suggestions.length > 0 && (
+          <div className="mt-3 rounded-md border border-stone-200 bg-white p-3">
+            <p className="text-xs uppercase tracking-[0.14em] text-stone-400">Creates checklist work</p>
+            <div className="mt-2 space-y-2">
+              {moment.task_suggestions.map((task) => (
+                <p key={`${task.assigned_to}-${task.description}`} className="text-sm leading-5 text-stone-700">
+                  {task.description}
+                </p>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
     </article>
   );
 }
