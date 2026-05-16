@@ -127,29 +127,34 @@ export function StayMomentEngine({ detail, approvedMomentIds, liveContext, onApp
   }
 
   return (
-    <section className="rounded-lg border border-stone-200 bg-white p-5 shadow-sm">
-      <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
-        <div>
-          <p className="text-xs uppercase tracking-[0.18em] text-clay">Moment engine</p>
-          <h2 className="mt-2 font-serif text-3xl text-stone-950">Approve one thoughtful move</h2>
-          <p className="mt-2 max-w-2xl text-sm leading-6 text-stone-600">
-            Generate restrained ideas, then release only what a staff member approves. Approved moments appear in the guest app.
-          </p>
+    <section className="flex h-[730px] flex-col rounded-lg border border-stone-200 bg-white p-5 shadow-sm">
+      <div className="shrink-0">
+        <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+          <div>
+            <p className="text-xs uppercase tracking-[0.18em] text-clay">Moment engine</p>
+            <h2 className="mt-2 font-serif text-3xl text-stone-950">Approve one thoughtful move</h2>
+            <p className="mt-2 max-w-2xl text-sm leading-6 text-stone-600">
+              Generate restrained ideas, then release only what a staff member approves. Approved moments appear in the guest app.
+            </p>
+          </div>
+          <Button onClick={generateIdeas} disabled={isPending} type="button">
+            <RefreshCw className={cn("h-4 w-4", isPending && "animate-spin")} />
+            Generate new ideas
+          </Button>
         </div>
-        <Button onClick={generateIdeas} disabled={isPending} type="button">
-          <RefreshCw className={cn("h-4 w-4", isPending && "animate-spin")} />
-          Generate new ideas
-        </Button>
       </div>
 
-      {source !== "none" && (
-        <p className="mt-3 rounded-md bg-linen px-3 py-2 text-xs text-stone-500">
-          Recommendation source: {source === "anthropic" ? "live AI" : "demo-safe fallback"}
-        </p>
-      )}
-      {error && <p className="mt-3 rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>}
+      <div className="mt-3 h-8 shrink-0">
+        {error ? (
+          <p className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>
+        ) : source !== "none" ? (
+          <p className="rounded-md bg-linen px-3 py-2 text-xs text-stone-500">
+            Recommendation source: {source === "anthropic" ? "live AI" : "demo-safe fallback"}
+          </p>
+        ) : null}
+      </div>
 
-      <div className="mt-5 flex h-[540px] items-stretch gap-4 overflow-x-auto pb-3">
+      <div className="mt-2 flex min-h-0 flex-1 items-stretch gap-4 overflow-x-auto pb-3">
         {visibleSeeded.map((moment) => (
           <MomentCard
             key={moment.id}
@@ -178,7 +183,7 @@ export function StayMomentEngine({ detail, approvedMomentIds, liveContext, onApp
           const id = `generated-${detail.stay.id}-${index}-${moment.title}`;
           return !approved.has(id) && !dismissed.has(id);
         }) && (
-          <div className="min-w-full rounded-lg border border-dashed border-stone-200 bg-[#fbfaf7] p-5 text-sm leading-6 text-stone-500">
+          <div className="flex h-full min-w-full items-center rounded-lg border border-dashed border-stone-200 bg-[#fbfaf7] p-5 text-sm leading-6 text-stone-500">
             No suggestions in the review queue. Generate new ideas when the stay context changes.
           </div>
         )}
